@@ -1,0 +1,134 @@
+802. Find Eventual Safe States
+
+There is a directed graph of n nodes with each node labeled from 0 to n - 1. The graph is represented by a 0-indexed 2D integer array graph where graph[i] is an integer array of nodes adjacent to node i, meaning there is an edge from node i to each node in graph[i].
+A node is a terminal node if there are no outgoing edges. A node is a safe node if every possible path starting from that node leads to a terminal node (or another safe node).
+Return an array containing all the safe nodes of the graph. The answer should be sorted in ascending order.
+
+Example 1:
+
+Illustration of graph
+Input: graph = [[1,2],[2,3],[5],[0],[5],[],[]]
+Output: [2,4,5,6]
+Explanation: The given graph is shown above.
+Nodes 5 and 6 are terminal nodes as there are no outgoing edges from either of them.
+Every path starting at nodes 2, 4, 5, and 6 all lead to either node 5 or 6.
+
+
+class Solution {
+
+    public List<Integer> eventualSafeNodes(int[][] graph) {
+
+        
+
+    int V = graph.length;
+
+    ArrayList<ArrayList<Integer>> adj = new ArrayList<>();
+
+      
+
+        //convert adj matrix to list
+
+    for(int i=0;i<graph.length;i++)
+
+    {
+
+        ArrayList<Integer> row = new ArrayList<>();
+
+        for(int j=0;j<graph[i].length;j++)
+
+        {
+
+            row.add(graph[i][j]);
+
+        }
+
+        adj.add(row);
+
+    }
+
+        
+
+        int vis[] = new int[V];
+
+        int pathVis[] = new int[V];
+
+        int check[] = new int[V];
+
+        for (int i = 0; i < V; i++)
+
+        {
+
+            if (vis[i] == 0) 
+
+            {
+
+                dfsCheck(i, adj, vis, pathVis, check);   //dfs calls will be made for every node
+
+            }
+
+        }
+
+        List<Integer> safeNodes = new ArrayList<>();
+
+        for (int i = 0; i < V; i++)
+
+        {
+
+            if (check[i] == 1) safeNodes.add(i);
+
+        }
+
+        return safeNodes;   
+
+        
+
+        
+
+    }
+   
+
+    private boolean dfsCheck(int node, ArrayList<ArrayList<Integer>> adj, int vis[], int pathVis[], int check[]) {
+
+        vis[node] = 1;
+
+        pathVis[node] = 1;
+
+        check[node] = 0;
+
+        for (int it : adj.get(node)) 
+
+        {
+
+            // when the node is not visited
+
+            if (vis[it] == 0)
+
+            {
+
+                if (dfsCheck(it, adj, vis, pathVis, check) == true) //returns true if cycle is found
+
+                    return true;
+
+            }
+
+            // if the node has been previously visited 
+
+            // but it has to be visited on the same path
+
+            else if (pathVis[it] == 1) {
+
+                return true;
+
+            }
+
+        }
+
+        check[node] = 1;   //reaches this line is no cycle is found and marks it as safe node
+
+        pathVis[node] = 0;  //unmark path visited
+
+        return false;
+
+    }
+
+}
