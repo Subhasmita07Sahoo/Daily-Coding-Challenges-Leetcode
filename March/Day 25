@@ -1,0 +1,69 @@
+3394. Check if Grid can be Cut into Sections
+
+You are given an integer n representing the dimensions of an n x n grid, with the origin at the bottom-left corner of the grid. You are also given a 2D array of coordinates rectangles, where rectangles[i] is in the form [startx, starty, endx, endy], representing a rectangle on the grid. Each rectangle is defined as follows:
+
+(startx, starty): The bottom-left corner of the rectangle.
+(endx, endy): The top-right corner of the rectangle.
+Note that the rectangles do not overlap. Your task is to determine if it is possible to make either two horizontal or two vertical cuts on the grid such that:
+
+Each of the three resulting sections formed by the cuts contains at least one rectangle.
+Every rectangle belongs to exactly one section.
+Return true if such cuts can be made; otherwise, return false.
+
+Example 1:
+
+Input: n = 5, rectangles = [[1,0,5,2],[0,2,2,4],[3,2,5,3],[0,4,4,5]]
+
+Output: true
+
+Explanation:
+
+The grid is shown in the diagram. We can make horizontal cuts at y = 2 and y = 4. Hence, output is true.
+
+
+class Solution {
+    public int[][] merge(int[][] intervals) {
+        int n = intervals.length;
+
+        Arrays.sort(intervals, (a, b) -> Integer.compare(a[0], b[0]));
+
+        List<int[]> result = new ArrayList<>();
+        result.add(intervals[0]);
+
+        for (int i = 1; i < n; i++) {
+            if (intervals[i][0] < result.get(result.size() - 1)[1]) { // Overlapping
+                result.get(result.size() - 1)[1] = Math.max(result.get(result.size() - 1)[1], intervals[i][1]);
+            } else {
+                result.add(intervals[i]);
+            }
+        }
+
+        return result.toArray(new int[result.size()][]);
+    }
+
+    public boolean checkValidCuts(int n, int[][] rectangles) {
+        List<int[]> hor = new ArrayList<>();
+        List<int[]> vert = new ArrayList<>();
+
+        for (int[] coord : rectangles) {
+            int x1 = coord[0];
+            int y1 = coord[1];
+            int x2 = coord[2];
+            int y2 = coord[3];
+
+            hor.add(new int[]{x1, x2});
+            vert.add(new int[]{y1, y2});
+        }
+
+        int[][] horArray = hor.toArray(new int[hor.size()][]);
+        int[][] vertArray = vert.toArray(new int[vert.size()][]);
+
+        int[][] result1 = merge(horArray);
+        if (result1.length >= 3) {
+            return true;
+        }
+
+        int[][] result2 = merge(vertArray);
+        return result2.length >= 3;
+    }
+}
