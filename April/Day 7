@@ -1,0 +1,57 @@
+416. Partition Equal Subset Sum
+
+Given an integer array nums, return true if you can partition the array into two subsets such that the sum of the elements in both subsets is equal or false otherwise.
+
+Example 1:
+
+Input: nums = [1,5,11,5]
+Output: true
+Explanation: The array can be partitioned as [1, 5, 5] and [11].
+
+
+class Solution {
+    public boolean canPartition(int[] nums) {
+        
+        int n = nums.length;
+        
+        int totSum = 0;
+        for (int i = 0; i < n; i++) {
+            totSum += nums[i];
+        }
+
+        // If the total sum is odd, it cannot be partitioned into equal subsets
+        if (totSum % 2 == 1)
+            return false;
+        else 
+        {
+            int sum = totSum / 2 ;
+            int dp[][] = new int[n][sum+1];
+
+            for(int row[] : dp)
+                Arrays.fill(row,-1);
+
+            return subsetsum(n-1,sum,dp,nums);
+        }
+    }
+    
+    
+    static boolean subsetsum(int ind,int target,int dp[][],int arr[])
+    {
+        if(target == 0) return true;
+        
+        if(ind == 0) return (arr[0] == target);
+        
+        if (dp[ind][target] != -1)
+            return dp[ind][target] == 0 ? false : true;
+            
+        boolean not_taken = subsetsum(ind-1,target,dp,arr);
+        
+        boolean taken = false;
+        if(target >= arr[ind])
+            taken = subsetsum(ind-1,target-arr[ind],dp,arr);
+            
+        dp[ind][target] = not_taken || taken ? 1 : 0;
+        return not_taken || taken;
+        
+    }
+}
