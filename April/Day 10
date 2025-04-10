@@ -1,0 +1,49 @@
+2999. Count the Number of Powerful Integers
+
+You are given three integers start, finish, and limit. You are also given a 0-indexed string s representing a positive integer.
+A positive integer x is called powerful if it ends with s (in other words, s is a suffix of x) and each digit in x is at most limit.
+Return the total number of powerful integers in the range [start..finish].
+A string x is a suffix of a string y if and only if x is a substring of y that starts from some index (including 0) in y and extends to the index y.length - 1. For example, 25 is a suffix of 5125 whereas 512 is not.
+
+Example 1:
+
+Input: start = 1, finish = 6000, limit = 4, s = "124"
+Output: 5
+Explanation: The powerful integers in the range [1..6000] are 124, 1124, 2124, 3124, and, 4124. All these integers have each digit <= 4, and "124" as a suffix. Note that 5124 is not a powerful integer because the first digit is 5 which is greater than 4.
+It can be shown that there are only 5 powerful integers in this range.
+
+
+class Solution {
+    private long solve(String str, String suffix, int limit) {
+        if (str.length() < suffix.length()) {
+            return 0;
+        }
+
+        long count = 0;
+        String trailing = str.substring(str.length() - suffix.length());
+        int prefixLength = str.length() - suffix.length();
+
+        for (int i = 0; i < prefixLength; i++) {
+            int digit = str.charAt(i) - '0';
+
+            if (digit <= limit) {
+                count += digit * Math.pow(limit + 1, prefixLength - i - 1);
+            } else {
+                count += Math.pow(limit + 1, prefixLength - i);
+                return count;
+            }
+        }
+
+        if (trailing.compareTo(suffix) >= 0) {
+            count++;
+        }
+
+        return count;
+    }
+
+    public long numberOfPowerfulInt(long start, long finish, int limit, String s) {
+        String startStr = String.valueOf(start - 1);
+        String finishStr = String.valueOf(finish);
+        return solve(finishStr, s, limit) - solve(startStr, s, limit);
+    }
+}
