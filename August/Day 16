@@ -1,0 +1,10 @@
+1323. Maximum 69 Number
+
+
+class Solution {
+    public int maximum69Number (int num) {
+        String s = Integer.toString(num);
+        String new_num = s. replaceFirst("6","9");
+        return Integer.parseInt(new_num);
+    }
+}
