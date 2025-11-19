@@ -1,0 +1,22 @@
+2154. Keep Multiplying Found Values by Two
+
+
+class Solution {
+    public int findFinalValue(int[] nums, int original) {
+
+        HashMap<Integer, Integer> map = new HashMap<>() ;
+        
+        for(int num : nums){
+            map.put(num,map.getOrDefault(num, 0)+1);
+        }
+
+        if(map.containsKey(original)){
+            original *=2 ;
+            while(map.containsKey(original)){
+                original *=2 ;
+            }
+        }
+        return original;
+        
+    }
+}
