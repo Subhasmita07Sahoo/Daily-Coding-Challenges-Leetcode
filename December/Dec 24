@@ -1,0 +1,23 @@
+3074. Apple Redistribution into Boxes
+
+class Solution {
+    public int minimumBoxes(int[] apple, int[] capacity) {
+        // Sort capacity in descending order
+        Arrays.sort(capacity);
+        int totalApple = 0;
+        for (int a : apple) {
+            totalApple += a;
+        }
+
+        int count = 0;
+        int i = capacity.length - 1;
+
+        while (totalApple > 0) {
+            totalApple -= capacity[i];
+            count++;
+            i--;
+        }
+
+        return count; // total number of boxes used
+    }
+}
